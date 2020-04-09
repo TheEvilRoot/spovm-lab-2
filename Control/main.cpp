@@ -8,6 +8,8 @@
 typedef PROCESS_INFORMATION ProcessInfo;
 typedef STARTUPINFOA StartUpInfo;
 
+HANDLE allowedEvent;
+
 ProcessInfo * createHandler() {
   StartUpInfo startUpInfo;
   ZeroMemory(&startUpInfo, sizeof(startUpInfo));
@@ -40,6 +42,9 @@ void deleteProcess(std::vector<ProcessInfo *> &processes) {
     TerminateProcess(process->hProcess, 0);
     WaitForSingleObject(process->hProcess, INFINITE);
   }
+
+  if (processes.empty())
+    SetEvent(allowedEvent);
 }
 
 void terminateProcesses(std::vector<ProcessInfo *> &processes) {
@@ -78,7 +83,7 @@ void handleSelfTerminated(std::vector<ProcessInfo *> &processes) {
 }
 
 int main(const int argc, const char *argv[]) { 
-  auto allowedEvent = CreateEventA(nullptr, false, true, "Allowed");
+  allowedEvent = CreateEventA(nullptr, false, true, "Allowed");
   std::vector<ProcessInfo *> processes;
 
   while (true) {

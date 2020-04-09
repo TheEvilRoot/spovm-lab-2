@@ -35,6 +35,7 @@ int main(const int argc, const char *argv[]) {
   while (true) {
     waitForQueue(allowedEvent);
 
+    fprintf(stderr, "\r");
     for (int i = 0; string[i]; i++) {
       Sleep(100);
       fprintf(stderr, "%c", string[i]);
